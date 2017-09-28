@@ -1,0 +1,17 @@
+{
+  "name": "stale-while-revalidate",
+  "version": "0.1.0",
+  "description": "An implementation of \"stale-while-revalidate\" caching policy",
+  "main": "bundle.js",
+  "scripts": {
+    "test": "eslint --fix src && ava",
+    "prepublish": "browserify src/index.js -s setStaleWhileRevalidate > bundle.js"
+  },
+  "author": "YanagiEiichi <admin@web-tinker.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "ava": "^0.22.0",
+    "browserify": "^14.4.0",
+    "eslint": "^4.7.2"
+  }
+}
