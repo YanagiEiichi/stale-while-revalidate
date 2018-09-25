@@ -1,4 +1,4 @@
-module.exports = function(statelessAsyncFunction, stale, maxAge) {
+var setStaleWhileRevalidate = function(statelessAsyncFunction, stale, maxAge) {
 
   // Check NaN and set "stale" defaults 60s
   if (+stale !== +stale) stale = 60;
