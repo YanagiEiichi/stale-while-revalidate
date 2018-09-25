@@ -1,7 +1,14 @@
-module.exports = function(statelessAsyncFunction, seconds) {
+module.exports = function(statelessAsyncFunction, stale, maxAge) {
 
-  // Check NaN and set "seconds" defaults 60s
-  if (+seconds !== +seconds) seconds = 60;
+  // Check NaN and set "stale" defaults 60s
+  if (+stale !== +stale) stale = 60;
+
+  // Check NaN and set "maxAge" defaults 0s
+  if (+maxAge !== +maxAge) maxAge = 0;
+
+  // Unify ms
+  stale *= 1000;
+  maxAge *= 1000;
 
   // Create cache objects in closure
   var callingCache = {};
@@ -11,6 +18,11 @@ module.exports = function(statelessAsyncFunction, seconds) {
 
     // Serialize all arguments as the cache key.
     var key = JSON.stringify(arguments);
+
+    // Return the result from cache if existed and not yet expired with maxAge.
+    if (key in resultCache && Date.now() - resultCache[key].timestamp < maxAge) {
+      return resultCache[key].promise;
+    }
 
     // Set calling cache if not existed and delete it after fulfilled.
     if (!(key in callingCache)) {
@@ -38,8 +50,8 @@ module.exports = function(statelessAsyncFunction, seconds) {
 
     }
 
-    // Return the result from cache if existed and not yet expired.
-    if (key in resultCache && Date.now() - resultCache[key].timestamp < seconds * 1000) {
+    // Return the result from cache if existed and not yet expired with SWR.
+    if (key in resultCache && Date.now() - resultCache[key].timestamp < maxAge + stale) {
       return resultCache[key].promise;
     } else {
       return callingCache[key];
