@@ -1,5 +1,5 @@
 const test = require('ava');
-const setStaleWhileRevalidate = require('../src');
+const setStaleWhileRevalidate = require('../bundle.js');
 
 test('async function debounce', t => {
   let inc = 0;

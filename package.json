@@ -4,14 +4,14 @@
   "description": "An implementation of \"stale-while-revalidate\" caching policy",
   "main": "bundle.js",
   "scripts": {
-    "test": "eslint --fix src && ava",
-    "prepublish": "browserify src/index.js -s setStaleWhileRevalidate > bundle.js"
+    "test": "eslint --fix src && npm run prepublish && ava",
+    "prepublish": "global2umd src/index.js setStaleWhileRevalidate > bundle.js"
   },
   "author": "YanagiEiichi <admin@web-tinker.com>",
   "license": "MIT",
   "devDependencies": {
     "ava": "^0.22.0",
-    "browserify": "^14.4.0",
+    "global2umd": "~0.0.1",
     "eslint": "^4.7.2"
   }
 }

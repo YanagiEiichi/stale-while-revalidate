@@ -14,7 +14,7 @@ var setStaleWhileRevalidate = function(statelessAsyncFunction, stale, maxAge) {
   var callingCache = {};
   var resultCache = {};
 
-  return function() {
+  var wrapper = function() {
 
     // Serialize all arguments as the cache key.
     var key = JSON.stringify(arguments);
@@ -40,7 +40,10 @@ var setStaleWhileRevalidate = function(statelessAsyncFunction, stale, maxAge) {
       }
 
       // Waiting for async calling
+      var theResultCache = resultCache;
       then.call(callingCache[key], function() {
+        // Check lock state
+        if (theResultCache !== resultCache) return;
         // Move calling cache to result cache and attach a timestamp.
         resultCache[key] = { promise: callingCache[key], timestamp: Date.now() };
         delete callingCache[key];
@@ -58,5 +61,16 @@ var setStaleWhileRevalidate = function(statelessAsyncFunction, stale, maxAge) {
     }
 
   };
+
+  // Expose a method to clean cache
+  Object.defineProperty(wrapper, 'clean', {
+    configurable: true,
+    value: function() {
+      callingCache = {};
+      resultCache = {};
+    }
+  });
+
+  return wrapper;
 
 };
